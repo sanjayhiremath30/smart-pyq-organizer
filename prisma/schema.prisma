@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+  role     String @default("STUDENT")
+}
+
+model Subject {
+  id        Int       @id @default(autoincrement())
+  name      String
+  semester  Int
+  scheme    String
+  pyqPapers PYQPaper[]
+}
+
+model PYQPaper {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  semester   Int
+  fileName   String
+  filePath   String
+  uploadedAt DateTime @default(now())
+  analysisReport String?
+  // Relation for internal logic
+  subjectRel Subject?  @relation(fields: [subjectId], references: [id])
+  subjectId  Int?
+}
+
+model Question {
+  id        Int      @id @default(autoincrement())
+  subject   String
+  semester  Int
+  scheme    String
+  module    Int      @default(1)
+  marks     Int
+  question  String
+  answer    String
+  frequency Int      @default(1)
+  topic     String?
+  label     String?  @default("Rare question")
+  createdAt DateTime @default(now())
+}
+
+model Notes {
+  id          Int      @id @default(autoincrement())
+  title       String?
+  description String?
+  fileUrl     String
+  module      Int
+  subject     String
+  semester    Int?
+  createdAt   DateTime @default(now())
+}
+
+model YoutubeVideo {
+  id           Int      @id @default(autoincrement())
+  title        String
+  link         String
+  subject      String
+  module       Int?
+
+  semester     Int?
+  scheme       String?
+
+  topic        String?
+  channelName  String?
+  thumbnailUrl String?
+
+  createdAt    DateTime @default(now())
+}
+
+model ModelPaper {
+  id         Int      @id @default(autoincrement())
+  title      String
+  subject    String
+  semester   Int
+  scheme     String
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  message   String
+  type      String   @default("INFO")
+  createdAt DateTime @default(now())
+}
+
